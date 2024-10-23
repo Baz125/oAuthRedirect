@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Auth Done</title>
+  </head>
+  <body>
+    <script>
+      // Send a message to the parent window
+      const queryParams = new URLSearchParams(window.location.search);
+      const code = queryParams.get("code");
+      const state = queryParams.get("state");
+      const parentWindow = window.opener || window.parent;
+      if (code && state) {
+        parentWindow.postMessage(
+          {
+            action: "login",
+            code: code,
+            state: state,
+          },
+          "*"
+        );
+        window.close();
+      }
+    </script>
+  </body>
+</html>
