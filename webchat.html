@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OAuth demo</title>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/ava.png" />
+    <style>
+      html {
+        background-color: #bbb;
+      }
+      pre {
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+    </style>
+  </head>
+
+  <body>
+    <script src="https://github.com/Cognigy/Webchat/releases/latest/download/webchat.js"></script>
+    <script>
+      //localStorage.removeItem("user_email");
+      const ENDPOINT_URL =
+        "https://endpoint-trial.cognigy.ai/d24d3d0ca746953530d801914a68fe15ba14755ebb90701b112dd2f0287cbef2";
+      const SETTINGS = {
+        settings: { disableBranding: true },
+        userId: "abc",
+      };
+
+      initWebchat(ENDPOINT_URL, SETTINGS).then((webchat) => {
+        window.cognigyWebchat = webchat;
+        webchat.open();
+
+        // Initialize the Analytics API
+        // Reference: https://support.cognigy.com/hc/en-us/articles/4405895190930-Disable-the-message-input-field
+        webchat.registerAnalyticsService((event) => {
+          if (event.type === "webchat/incoming-message") {
+            const { payload } = event;
+            const { text, data } = payload;
+
+            // Check if usermail was passed from flow
+            if (data.user_email) {
+              console.log("user_email received");
+              console.log("data.user_email: " + data.user_email);
+              localStorage.setItem("user_email", data.user_email);
+              console.log(
+                "localStorage user_email: " + localStorage.getItem("user_email")
+              );
+            }
+          }
+        });
+      });
+
+      setTimeout(() => {
+        const user_email = localStorage.getItem("user_email") || "";
+        cognigyWebchat.sendMessage("", {
+          //action: "checkUser",
+          user_email: user_email,
+        });
+      }, 10); // 1 seconds delay
+
+      window.addEventListener(
+        "message",
+        (event) => {
+          if (event.origin !== "https://jyvj82.csb.app") {
+            return;
+          }
+          const data = event.data;
+          if (data.action == "login" && data.code && data.state) {
+            const code = data.code;
+            const state = data.state;
+            window.cognigyWebchat.sendMessage("Authentication successful", {
+              authResponse: { code, state },
+            });
+          }
+          if (data.action == "logout") {
+            window.cognigyWebchat.sendMessage("You've been logged out", {
+              loggedOutOnWebchat: true,
+            });
+          }
+        },
+        false
+      );
+
+      // Hide the Open Sandbox button from Code Sandbox
+      window.setTimeout(() => {
+        Array.from(document.body.querySelectorAll("iframe"))
+          .filter((iframe) => iframe.id.startsWith("sb__open-sandbox"))
+          .forEach((iframe) => {
+            iframe.remove();
+            const div = document.createElement("div");
+            div.id = iframe.id;
+            div.style.setProperty("display", "none", "important");
+            document.body.appendChild(div);
+          });
+      }, 500);
+    </script>
+  </body>
+</html>
