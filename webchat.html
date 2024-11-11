@@ -69,12 +69,12 @@
           if (data.action == "login" && data.code && data.state) {
             const code = data.code;
             const state = data.state;
-            window.cognigyWebchat.sendMessage("Authentication successful", {
+            window.cognigyWebchat.sendMessage("", {
               authResponse: { code, state },
             });
           }
           if (data.action == "logout") {
-            window.cognigyWebchat.sendMessage("You've been logged out", {
+            window.cognigyWebchat.sendMessage("", {
               loggedOutOnWebchat: true,
             });
           }
