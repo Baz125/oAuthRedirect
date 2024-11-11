@@ -81,19 +81,6 @@
         },
         false
       );
-
-      // Hide the Open Sandbox button from Code Sandbox
-      window.setTimeout(() => {
-        Array.from(document.body.querySelectorAll("iframe"))
-          .filter((iframe) => iframe.id.startsWith("sb__open-sandbox"))
-          .forEach((iframe) => {
-            iframe.remove();
-            const div = document.createElement("div");
-            div.id = iframe.id;
-            div.style.setProperty("display", "none", "important");
-            document.body.appendChild(div);
-          });
-      }, 500);
     </script>
   </body>
 </html>
