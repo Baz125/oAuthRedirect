@@ -62,9 +62,10 @@
       window.addEventListener(
         "message",
         (event) => {
-          if (event.origin !== "https://jyvj82.csb.app") {
-            return;
-          }
+          // only pass tokens if they originate from a specific URL
+          // if (event.origin !== "https://jyvj82.csb.app") {
+          //   return;
+          // }
           const data = event.data;
           if (data.action == "login" && data.code && data.state) {
             const code = data.code;
