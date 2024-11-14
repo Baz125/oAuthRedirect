@@ -40,12 +40,10 @@
 
             // Check if usermail was passed from flow
             if (data.user_email) {
-              console.log("user_email received");
-              console.log("data.user_email: " + data.user_email);
               localStorage.setItem("user_email", data.user_email);
-              console.log(
-                "localStorage user email: " + localStorage.getItem("user_email")
-              );
+            }
+            if (data.logout) {
+              localStorage.removeItem("user_email");
             }
           }
         });
@@ -72,11 +70,6 @@
             const state = data.state;
             window.cognigyWebchat.sendMessage("", {
               authResponse: { code, state },
-            });
-          }
-          if (data.action == "logout") {
-            window.cognigyWebchat.sendMessage("", {
-              loggedOutOnWebchat: true,
             });
           }
         },
